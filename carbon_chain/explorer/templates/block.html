@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}Block #{{ block.height }} - CarbonChain{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="separator">→</span>
+    <a href="/blocks">Blocks</a>
+    <span class="separator">→</span>
+    <span class="current">Block #{{ block.height }}</span>
+</div>
+
+<!-- Block Header -->
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="icon">📦</span>
+        Block #{{ block.height }}
+    </h1>
+    
+    <div class="page-actions">
+        <button class="btn-glass" onclick="copyToClipboard('{{ block.hash }}')">
+            <span class="icon">📋</span>
+            Copy Hash
+        </button>
+        <a href="/block/{{ block.height - 1 }}" class="btn-glass">
+            <span class="icon">←</span>
+            Previous
+        </a>
+        <a href="/block/{{ block.height + 1 }}" class="btn-glass">
+            <span class="icon">→</span>
+            Next
+        </a>
+    </div>
+</div>
+
+<!-- Block Info -->
+<div class="info-grid">
+    <div class="glass-card info-card">
+        <h3 class="info-title">Block Information</h3>
+        
+        <div class="info-list">
+            <div class="info-row">
+                <span class="info-label">Height</span>
+                <span class="info-value">{{ block.height }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Timestamp</span>
+                <span class="info-value" data-timestamp="{{ block.timestamp }}">
+                    {{ block.timestamp }}
+                </span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Transactions</span>
+                <span class="info-value">{{ transactions|length }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Difficulty</span>
+                <span class="info-value">{{ block.difficulty }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Nonce</span>
+                <span class="info-value">{{ block.nonce }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="glass-card info-card">
+        <h3 class="info-title">Hashes</h3>
+        
+        <div class="info-list">
+            <div class="info-row vertical">
+                <span class="info-label">Block Hash</span>
+                de class="hash-value">{{ block.hash }}</code>
+            </div>
+            
+            <div class="info-row vertical">
+                <span class="info-label">Previous Hash</span>
+                de class="hash-value">
+                    <a href="/block/{{ block.height - 1 }}">{{ block.prev_hash }}</a>
+                </code>
+            </div>
+            
+            <div class="info-row vertical">
+                <span class="info-label">Merkle Root</span>
+                de class="hash-value">{{ block.merkle_root }}</code>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transactions -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <span class="icon">📝</span>
+            Transactions ({{ transactions|length }})
+        </h2>
+    </div>
+    
+    <div class="transactions-list">
+        {% for tx in transactions %}
+        <a href="/tx/{{ tx.txid }}" class="transaction-card glass-card">
+            <div class="tx-header">
+                <div class="tx-type {{ tx.type }}">
+                    {{ tx.type|upper }}
+                </div>
+                <div class="tx-hash">
+                    de>{{ tx.txid[:16] }}...</code>
+                </div>
+            </div>
+            
+            <div class="tx-body">
+                <div class="tx-io">
+                    <div class="tx-inputs">
+                        <span class="label">Inputs:</span>
+                        <span class="value">{{ tx.inputs_count }}</span>
+                    </div>
+                    <div class="tx-arrow">→</div>
+                    <div class="tx-outputs">
+                        <span class="label">Outputs:</span>
+                        <span class="value">{{ tx.outputs_count }}</span>
+                    </div>
+                </div>
+                
+                <div class="tx-amount">
+                    <span class="amount-value">{{ (tx.total_output / 100000000)|round(8) }}</span>
+                    <span class="amount-unit">CCO₂</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success notification
+        showNotification('Copied to clipboard!');
+    });
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification glass-card';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+// Format timestamps
+document.querySelectorAll('[data-timestamp]').forEach(el => {
+    const timestamp = parseInt(el.dataset.timestamp);
+    const date = new Date(timestamp * 1000);
+    el.textContent = date.toLocaleString();
+});
+</script>
+{% endblock %}

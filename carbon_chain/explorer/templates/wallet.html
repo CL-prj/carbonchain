@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Address {{ address[:16] }}... - CarbonChain{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="separator">→</span>
+    <span class="current">Address</span>
+</div>
+
+<!-- Address Header -->
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="icon">👛</span>
+        Wallet Address
+    </h1>
+    
+    <div class="page-actions">
+        <button class="btn-glass" onclick="copyToClipboard('{{ address }}')">
+            <span class="icon">📋</span>
+            Copy Address
+        </button>
+        <button class="btn-glass" onclick="generateQR()">
+            <span class="icon">📱</span>
+            Show QR
+        </button>
+    </div>
+</div>
+
+<!-- Address Card -->
+<div class="glass-card address-card">
+    <div class="address-header">
+        <span class="address-label">Address</span>
+        <button class="btn-icon" onclick="copyToClipboard('{{ address }}')">
+            <span class="icon">📋</span>
+        </button>
+    </div>
+    de class="address-value-large">{{ address }}</code>
+</div>
+
+<!-- Balance & Stats -->
+<div class="wallet-stats-grid">
+    <div class="glass-card stat-card-large">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <div class="stat-value-large">{{ balance }}</div>
+            <div class="stat-label">Total Balance</div>
+            <div class="stat-unit">CCO₂</div>
+        </div>
+    </div>
+    
+    <div class="glass-card stat-card-large">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+            <div class="stat-value-large">{{ utxo_count }}</div>
+            <div class="stat-label">Unspent Outputs</div>
+            <div class="stat-unit">UTXOs</div>
+        </div>
+    </div>
+    
+    <div class="glass-card stat-card-large">
+        <div class="stat-icon">📝</div>
+        <div class="stat-content">
+            <div class="stat-value-large" id="txCount">-</div>
+            <div class="stat-label">Total Transactions</div>
+            <div class="stat-unit">TXs</div>
+        </div>
+    </div>
+    
+    <div class="glass-card stat-card-large">
+        <div class="stat-icon">🎖️</div>
+        <div class="stat-content">
+            <div class="stat-value-large" id="certCount">-</div>
+            <div class="stat-label">Certificates</div>
+            <div class="stat-unit">Owned</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs-container">
+    <div class="glass-card tabs-card">
+        <div class="tabs-header">
+            <button class="tab active" data-tab="transactions">
+                <span class="icon">📝</span>
+                Transactions
+            </button>
+            <button class="tab" data-tab="utxos">
+                <span class="icon">📦</span>
+                UTXOs
+            </button>
+            <button class="tab" data-tab="certificates">
+                <span class="icon">🎖️</span>
+                Certificates
+            </button>
+        </div>
+        
+        <div class="tabs-content">
+            <!-- Transactions Tab -->
+            <div id="transactions" class="tab-pane active">
+                <div class="transaction-list">
+                    <div class="empty-state">
+                        <span class="icon">📝</span>
+                        <p>Loading transactions...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- UTXOs Tab -->
+            <div id="utxos" class="tab-pane">
+                <div class="utxo-list">
+                    <div class="empty-state">
+                        <span class="icon">📦</span>
+                        <p>No unspent outputs</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificates Tab -->
+            <div id="certificates" class="tab-pane">
+                <div class="certificate-list">
+                    <div class="empty-state">
+                        <span class="icon">🎖️</span>
+                        <p>No certificates owned</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Modal -->
+<div id="qrModal" class="modal">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content glass-card">
+        <div class="modal-header">
+            <h3>Address QR Code</h3>
+            <button class="btn-icon" onclick="closeModal()">
+                <span class="icon">✕</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="qrCode" class="qr-container"></div>
+            <p class="qr-address">{{ address }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const address = "{{ address }}";
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active from all
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        
+        // Add active to clicked
+        tab.classList.add('active');
+        const paneId = tab.dataset.tab;
+        document.getElementById(paneId).classList.add('active');
+    });
+});
+
+// Copy to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('✅ Address copied to clipboard!');
+    });
+}
+
+// Generate QR Code
+function generateQR() {
+    document.getElementById('qrModal').classList.add('show');
+    
+    // Generate QR code (simplified - in production use proper QR library)
+    const qrContainer = document.getElementById('qrCode');
+    qrContainer.innerHTML = `
+        <div class="qr-placeholder">
+            <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                <rect width="200" height="200" fill="#fff" rx="10"/>
+                <text x="100" y="100" text-anchor="middle" fill="#666" font-size="14">
+                    QR Code
+                </text>
+                <text x="100" y="120" text-anchor="middle" fill="#999" font-size="10">
+                    (Requires QR library)
+                </text>
+            </svg>
+        </div>
+    `;
+}
+
+function closeModal() {
+    document.getElementById('qrModal').classList.remove('show');
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification glass-card';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+// Load data
+async function loadWalletData() {
+    try {
+        // Load transactions
+        // const txResponse = await fetch(`/api/address/${address}/transactions`);
+        // const txData = await txResponse.json();
+        
+        // For now, show placeholder
+        setTimeout(() => {
+            document.getElementById('txCount').textContent = '0';
+            document.getElementById('certCount').textContent = '0';
+        }, 500);
+    } catch (error) {
+        console.error('Failed to load wallet data:', error);
+    }
+}
+
+loadWalletData();
+</script>
+{% endblock %}

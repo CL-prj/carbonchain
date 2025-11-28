@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Certificate {{ certificate.id }} - CarbonChain{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="separator">→</span>
+    <a href="/certificates">Certificates</a>
+    <span class="separator">→</span>
+    <span class="current">{{ certificate.id }}</span>
+</div>
+
+<!-- Certificate Header -->
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="icon">🎖️</span>
+        CO₂ Certificate
+    </h1>
+    
+    <div class="certificate-status {{ certificate.status }}">
+        <span class="status-dot"></span>
+        {{ certificate.status|upper }}
+    </div>
+</div>
+
+<!-- Certificate Card -->
+<div class="certificate-showcase glass-card">
+    <div class="certificate-decoration">
+        <div class="cert-seal">
+            <span class="seal-icon">✓</span>
+        </div>
+    </div>
+    
+    <div class="certificate-content">
+        <div class="cert-logo">🌿</div>
+        <h2 class="cert-title">Carbon Offset Certificate</h2>
+        <div class="cert-id">{{ certificate.id }}</div>
+        
+        <div class="cert-details">
+            <div class="cert-detail-row">
+                <span class="label">Total Amount:</span>
+                <span class="value">{{ (certificate.total_amount / 100000000)|round(2) }} tons CO₂</span>
+            </div>
+            
+            <div class="cert-detail-row">
+                <span class="label">Compensated:</span>
+                <span class="value">{{ (certificate.compensated_amount / 100000000)|round(2) }} tons CO₂</span>
+            </div>
+            
+            <div class="cert-detail-row">
+                <span class="label">Remaining:</span>
+                <span class="value highlight">
+                    {{ ((certificate.total_amount - certificate.compensated_amount) / 100000000)|round(2) }} tons CO₂
+                </span>
+            </div>
+        </div>
+        
+        <div class="cert-progress">
+            <div class="progress-bar">
+                {% set progress_pct = ((certificate.compensated_amount * 100) / certificate.total_amount)|int %}
+                <div class="progress-fill" style="width: {{ progress_pct }}%"></div>
+            </div>
+            <div class="progress-label">
+                {% set progress_pct = ((certificate.compensated_amount * 100) / certificate.total_amount)|int %}
+                {{ progress_pct }}% Compensated
+            </div>
+        </div>
+    </div>
+    
+    <div class="certificate-footer">
+        <p class="cert-blockchain">Verified on CarbonChain Blockchain</p>
+        <button class="btn-glass" onclick="downloadCertificate()">
+            <span class="icon">⬇️</span>
+            Download Certificate
+        </button>
+    </div>
+</div>
+
+<!-- Certificate Info Grid -->
+<div class="info-grid">
+    <div class="glass-card info-section">
+        <h3 class="section-title">
+            <span class="icon">📋</span>
+            Certificate Details
+        </h3>
+        
+        <div class="info-list">
+            <div class="info-row">
+                <span class="label">Certificate ID</span>
+                de class="value">{{ certificate.id }}</code>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Issued Date</span>
+                <span class="value">{{ certificate.issued_date|default('2025-01-01') }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Project Type</span>
+                <span class="value">{{ certificate.project_type|default('Solar Energy') }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Location</span>
+                <span class="value">{{ certificate.location|default('Italy') }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Verification Standard</span>
+                <span class="value">{{ certificate.standard|default('VCS') }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="glass-card info-section">
+        <h3 class="section-title">
+            <span class="icon">🔗</span>
+            Blockchain Verification
+        </h3>
+        
+        <div class="verification-status">
+            <div class="verification-icon">
+                <span class="icon-large">✓</span>
+            </div>
+            <div class="verification-text">
+                <h4>Verified on Blockchain</h4>
+                <p>This certificate is recorded on the CarbonChain blockchain and cannot be altered or duplicated.</p>
+            </div>
+        </div>
+        
+        <div class="info-list">
+            <div class="info-row">
+                <span class="label">Block Height</span>
+                <span class="value">{{ certificate.block_height|default('12345') }}</span>
+            </div>
+            
+            <div class="info-row">
+                <span class="label">Transaction ID</span>
+                de class="value-small">{{ certificate.txid|default('abc123...')|truncate(16) }}</code>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Compensation History -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <span class="icon">📊</span>
+            Compensation History
+        </h2>
+    </div>
+    
+    <div class="glass-card timeline-card">
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2025-01-15</div>
+                    <div class="timeline-title">Certificate Issued</div>
+                    <div class="timeline-description">
+                        1,000 tons CO₂ certificate issued
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">2025-02-20</div>
+                    <div class="timeline-title">Partial Compensation</div>
+                    <div class="timeline-description">
+                        500 tons CO₂ compensated
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">Current</div>
+                    <div class="timeline-title">Active</div>
+                    <div class="timeline-description">
+                        500 tons CO₂ remaining
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QR Code Section -->
+<div class="glass-card qr-section">
+    <h3 class="section-title">
+        <span class="icon">📱</span>
+        Share Certificate
+    </h3>
+    
+    <div class="qr-content">
+        <div id="certificateQR" class="qr-display">
+            <!-- QR code will be generated here -->
+            <div class="qr-placeholder">
+                <span class="icon-large">📱</span>
+                <p>Scan to verify certificate</p>
+            </div>
+        </div>
+        
+        <div class="qr-actions">
+            <button class="btn-glass" onclick="generateQR()">
+                <span class="icon">🔄</span>
+                Generate QR Code
+            </button>
+            <button class="btn-glass" onclick="shareLink()">
+                <span class="icon">🔗</span>
+                Copy Share Link
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const certificateId = "{{ certificate.id }}";
+
+function downloadCertificate() {
+    showNotification('📄 Certificate download started...');
+}
+
+function generateQR() {
+    const url = window.location.href;
+    showNotification('📱 QR Code generated!');
+}
+
+function shareLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        showNotification('🔗 Share link copied to clipboard!');
+    });
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification glass-card';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+</script>
+{% endblock %}

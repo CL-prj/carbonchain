@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}CarbonChain Explorer - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="glass-card hero-card">
+        <h1 class="hero-title">
+            <span class="gradient-text">CarbonChain</span> Explorer
+        </h1>
+        <p class="hero-subtitle">
+            Transparent blockchain for CO₂ certification and compensation
+        </p>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card glass-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value">{{ height }}</div>
+                <div class="stat-label">Block Height</div>
+            </div>
+            
+            <div class="stat-card glass-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value">{{ total_supply }}</div>
+                <div class="stat-label">Total Supply (CCO₂)</div>
+            </div>
+            
+            <div class="stat-card glass-card">
+                <div class="stat-icon">🎖️</div>
+                <div class="stat-value" id="certCount">-</div>
+                <div class="stat-label">Certificates</div>
+            </div>
+            
+            <div class="stat-card glass-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-value" id="nodeCount">-</div>
+                <div class="stat-label">Active Nodes</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Latest Blocks Section -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <span class="icon">📦</span>
+            Latest Blocks
+        </h2>
+        <a href="/blocks" class="view-all-link">View All →</a>
+    </div>
+    
+    <div class="blocks-grid">
+        {% for block in latest_blocks %}
+        <a href="/block/{{ block.height }}" class="block-card glass-card">
+            <div class="block-header">
+                <div class="block-height">
+                    <span class="label">Block</span>
+                    <span class="value">#{{ block.height }}</span>
+                </div>
+                <div class="block-time">
+                    <span class="icon">⏱️</span>
+                    <span class="time" data-timestamp="{{ block.timestamp }}">
+                        {{ block.timestamp }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="block-hash">
+                <span class="hash-label">Hash:</span>
+                de>{{ block.hash }}</code>
+            </div>
+            
+            <div class="block-footer">
+                <div class="tx-count">
+                    <span class="icon">📝</span>
+                    <span>{{ block.tx_count }} transactions</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Live Feed Section -->
+<section class="section">
+    <div class="section-header">
+        <h2 class="section-title">
+            <span class="icon">📡</span>
+            Live Activity
+        </h2>
+        <div class="live-indicator">
+            <span class="pulse"></span>
+            <span>Live</span>
+        </div>
+    </div>
+    
+    <div class="glass-card activity-feed">
+        <div id="activityFeed" class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon">🔷</div>
+                <div class="activity-content">
+                    <div class="activity-text">Loading recent activity...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="section">
+    <div class="quick-actions">
+        <a href="/certificates" class="action-card glass-card">
+            <div class="action-icon">🎖️</div>
+            <h3>Verify Certificate</h3>
+            <p>Check CO₂ certificate authenticity</p>
+        </a>
+        
+        <a href="/projects" class="action-card glass-card">
+            <div class="action-icon">🌱</div>
+            <h3>Browse Projects</h3>
+            <p>Explore carbon offset projects</p>
+        </a>
+        
+        <a href="/api" class="action-card glass-card">
+            <div class="action-icon">⚡</div>
+            <h3>API Access</h3>
+            <p>Integrate with your application</p>
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Real-time stats update
+async function updateStats() {
+    try {
+        const response = await fetch('/api/stats');
+        const data = await response.json();
+        
+        document.getElementById('certCount').textContent = data.certificate_count || '-';
+        document.getElementById('nodeCount').textContent = data.node_count || '-';
+    } catch (error) {
+        console.error('Failed to update stats:', error);
+    }
+}
+
+// Format timestamps
+function formatTimestamps() {
+    document.querySelectorAll('[data-timestamp]').forEach(el => {
+        const timestamp = parseInt(el.dataset.timestamp);
+        const date = new Date(timestamp * 1000);
+        el.textContent = formatTimeAgo(date);
+    });
+}
+
+function formatTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return `${seconds}s ago`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
+}
+
+// Initialize
+updateStats();
+formatTimestamps();
+
+// Update every 30 seconds
+setInterval(updateStats, 30000);
+setInterval(formatTimestamps, 1000);
+</script>
+{% endblock %}

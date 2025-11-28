@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction {{ tx.txid[:16] }}... - CarbonChain{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="separator">→</span>
+    <span class="current">Transaction</span>
+</div>
+
+<!-- Transaction Header -->
+<div class="page-header">
+    <h1 class="page-title">
+        <span class="icon">📝</span>
+        Transaction Details
+    </h1>
+    
+    <div class="tx-type-badge {{ tx.type }}">
+        {{ tx.type|upper }}
+    </div>
+</div>
+
+<!-- Transaction Hash -->
+<div class="glass-card hash-card">
+    <div class="hash-header">
+        <span class="hash-label">Transaction ID</span>
+        <button class="btn-icon" onclick="copyToClipboard('{{ tx.txid }}')">
+            <span class="icon">📋</span>
+        </button>
+    </div>
+    de class="hash-value-large">{{ tx.txid }}</code>
+</div>
+
+<!-- Transaction Info -->
+<div class="glass-card info-card">
+    <h3 class="info-title">Transaction Information</h3>
+    
+    <div class="info-list">
+        <div class="info-row">
+            <span class="info-label">Type</span>
+            <span class="info-value">{{ tx.type|upper }}</span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Timestamp</span>
+            <span class="info-value" data-timestamp="{{ tx.timestamp }}">
+                {{ tx.timestamp }}
+            </span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Inputs</span>
+            <span class="info-value">{{ tx.inputs|length }}</span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Outputs</span>
+            <span class="info-value">{{ tx.outputs|length }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Flow -->
+<div class="tx-flow-container">
+    <!-- Inputs -->
+    <div class="tx-flow-section">
+        <h3 class="flow-title">
+            <span class="icon">📥</span>
+            Inputs
+        </h3>
+        
+        <div class="flow-list">
+            {% for input in tx.inputs %}
+            <div class="glass-card flow-item">
+                {% if input.prev_txid == "Coinbase" %}
+                <div class="coinbase-badge">
+                    <span class="icon">⛏️</span>
+                    Coinbase (Mining Reward)
+                </div>
+                {% else %}
+                <div class="flow-txid">
+                    <span class="label">Previous TX:</span>
+                    de>{{ input.prev_txid[:16] }}...</code>
+                </div>
+                <div class="flow-index">
+                    Output #{{ input.prev_index }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Arrow -->
+    <div class="tx-flow-arrow">
+        <div class="arrow-line"></div>
+        <div class="arrow-head">→</div>
+    </div>
+    
+    <!-- Outputs -->
+    <div class="tx-flow-section">
+        <h3 class="flow-title">
+            <span class="icon">📤</span>
+            Outputs
+        </h3>
+        
+        <div class="flow-list">
+            {% for output in tx.outputs %}
+            <div class="glass-card flow-item">
+                <div class="output-header">
+                    <span class="output-index">#{{ output.index }}</span>
+                    <div class="output-amount">
+                        <span class="amount">{{ output.amount }}</span>
+                        <span class="unit">CCO₂</span>
+                    </div>
+                </div>
+                
+                <div class="output-address">
+                    <a href="/address/{{ output.address }}">
+                        de>{{ output.address }}</code>
+                    </a>
+                </div>
+                
+                <div class="output-satoshi">
+                    {{ output.amount_satoshi }} Satoshi
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Metadata (if exists) -->
+{% if tx.metadata %}
+<div class="glass-card metadata-card">
+    <h3 class="info-title">
+        <span class="icon">ℹ️</span>
+        Metadata
+    </h3>
+    
+    <div class="metadata-content">
+        <pre>de>{{ tx.metadata|tojson(indent=2) }}</code></pre>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('✅ Copied to clipboard!');
+    });
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification glass-card';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+}
+
+// Format timestamp
+document.querySelectorAll('[data-timestamp]').forEach(el => {
+    const timestamp = parseInt(el.dataset.timestamp);
+    const date = new Date(timestamp * 1000);
+    el.textContent = date.toLocaleString();
+});
+</script>
+{% endblock %}
