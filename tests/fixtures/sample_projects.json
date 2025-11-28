@@ -1,0 +1,99 @@
+{
+  "projects": [
+    {
+      "project_id": "PROJ-2025-001",
+      "name": "Solar Energy Farm Tuscany",
+      "type": "RENEWABLE_ENERGY",
+      "location": "Tuscany, Italy",
+      "description": "Large-scale solar photovoltaic installation offsetting carbon emissions through renewable energy generation.",
+      "status": "ACTIVE",
+      "start_date": "2024-01-01",
+      "metadata": {
+        "capacity_mw": 50,
+        "technology": "Bifacial Solar Panels",
+        "annual_generation_mwh": 87600,
+        "co2_reduction_annual_tons": 35000,
+        "sdg_goals": [7, 13],
+        "verification_body": "RINA",
+        "methodology": "ACM0002"
+      }
+    },
+    {
+      "project_id": "PROJ-2025-002",
+      "name": "Amazon Rainforest Protection",
+      "type": "FOREST_CONSERVATION",
+      "location": "Amazonas, Brazil",
+      "description": "REDD+ project protecting 10,000 hectares of primary rainforest from deforestation.",
+      "status": "ACTIVE",
+      "start_date": "2023-06-15",
+      "metadata": {
+        "area_hectares": 10000,
+        "forest_type": "Primary Amazon Rainforest",
+        "biodiversity": "High",
+        "community_benefits": "Employment for 200 families",
+        "co2_sequestration_annual_tons": 50000,
+        "sdg_goals": [13, 15, 1, 8],
+        "verification_body": "TÜV SÜD",
+        "methodology": "VM0015"
+      }
+    },
+    {
+      "project_id": "PROJ-2025-003",
+      "name": "Carbfix Direct Air Capture",
+      "type": "CARBON_CAPTURE",
+      "location": "Reykjavik, Iceland",
+      "description": "Advanced direct air capture facility with permanent geological CO2 storage through mineralization.",
+      "status": "ACTIVE",
+      "start_date": "2024-03-01",
+      "metadata": {
+        "technology": "Direct Air Capture + Mineralization",
+        "capture_capacity_annual_tons": 2500,
+        "storage_method": "Basalt Mineralization",
+        "permanence_years": 10000,
+        "energy_source": "Geothermal",
+        "sdg_goals": [13, 9],
+        "verification_body": "DNV",
+        "methodology": "Puro.earth CarbFix"
+      }
+    },
+    {
+      "project_id": "PROJ-2025-004",
+      "name": "Wind Energy Scotland",
+      "type": "RENEWABLE_ENERGY",
+      "location": "Scottish Highlands, UK",
+      "description": "Offshore wind farm generating clean electricity and displacing fossil fuel-based power generation.",
+      "status": "ACTIVE",
+      "start_date": "2023-09-01",
+      "metadata": {
+        "capacity_mw": 100,
+        "technology": "Offshore Wind Turbines",
+        "turbine_count": 25,
+        "annual_generation_mwh": 350000,
+        "co2_reduction_annual_tons": 140000,
+        "sdg_goals": [7, 13, 14],
+        "verification_body": "Bureau Veritas",
+        "methodology": "ACM0002"
+      }
+    },
+    {
+      "project_id": "PROJ-2025-005",
+      "name": "Mangrove Restoration Indonesia",
+      "type": "FOREST_CONSERVATION",
+      "location": "Sulawesi, Indonesia",
+      "description": "Coastal mangrove reforestation project restoring critical ecosystems and sequestering blue carbon.",
+      "status": "ACTIVE",
+      "start_date": "2024-02-01",
+      "metadata": {
+        "area_hectares": 5000,
+        "forest_type": "Mangrove",
+        "trees_planted": 1500000,
+        "co2_sequestration_annual_tons": 25000,
+        "coastal_protection": "50km coastline",
+        "fishery_benefits": "Enhanced fishery productivity",
+        "sdg_goals": [13, 14, 15, 1],
+        "verification_body": "SCS Global Services",
+        "methodology": "VM0033"
+      }
+    }
+  ]
+}

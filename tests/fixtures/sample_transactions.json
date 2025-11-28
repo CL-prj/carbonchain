@@ -1,0 +1,279 @@
+{
+  "transactions": [
+    {
+      "txid": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6",
+      "tx_type": "COINBASE",
+      "version": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "amount": 5000000000,
+          "address": "1MinerAddress123456789ABCDEFGHJKLMNPQRSTUVWXYZabcd",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640000000,
+      "metadata": {
+        "block_height": 1,
+        "coinbase_message": "Genesis Block Mining Reward"
+      }
+    },
+    {
+      "txid": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1",
+      "tx_type": "TRANSFER",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6",
+          "prev_index": 0,
+          "signature": "3044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb",
+          "pubkey": "04ae1a62fe09c5f51b13905f07f06b99a2f7159b2225f374cd378d71302fa28414e7aab37397f554a7df5f142c21c1b7303b8a0626f1baded5c72a704f7e6cd84c"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 2000000000,
+          "address": "1RecipientAddr1ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        },
+        {
+          "amount": 2999990000,
+          "address": "1ChangeAddress2ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640001000,
+      "metadata": {
+        "fee": 10000,
+        "description": "Standard transfer"
+      }
+    },
+    {
+      "txid": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2",
+      "tx_type": "CERTIFICATE",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1",
+          "prev_index": 0,
+          "signature": "304402201c6c52c93447b0e9b4a96b6bc62b32f9c9f8c9e9d9c9b9a9998979869758494022046d8dddc696c3ea6f7e3b8a3c3a3b3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+          "pubkey": "0411db93e1dcdb8a016b49840f8c53bc1eb68a382e97b1482ecad7b148a6909a5cb2e0eaddfb84ccf9744464f82e160bfa9b8b64f9d4c03f999b8643f656b412a3"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 100000000000,
+          "address": "1ProjectAddr3ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640002000,
+      "metadata": {
+        "certificate": {
+          "certificate_id": "CERT-2025-0001",
+          "project_id": "PROJ-2025-001",
+          "vintage": 2025,
+          "total_amount": 100000000000,
+          "certificate_type": "RENEWABLE_ENERGY",
+          "location": "Italy",
+          "standard": "VCS",
+          "issuer": "1IssuerAddr4ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "verification_doc": "ipfs://QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
+        }
+      }
+    },
+    {
+      "txid": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3",
+      "tx_type": "TRANSFER",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2",
+          "prev_index": 0,
+          "signature": "3045022100e4f8a2c8b5d3a1f2e3d4c5b6a7988796857463524150413a2918170605f4e302022048d2e1c0b9a8978696857463524150413a2918170605f4e3d2c1b0a9988796",
+          "pubkey": "04a34b99f22c790c4e36b2b3c2c4e38d31d160e4d8c8e5e3d2c1b0a998879685746352415f4e3d2c1b0a998879685746352415f4e3d2c1b0a99887968574635241"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 50000000000,
+          "address": "1CertHolderABCDEFGHJKLMNPQRSTUVWXYZabcdefgh5",
+          "coin_state": "CERTIFIED",
+          "certificate_id": "CERT-2025-0001"
+        },
+        {
+          "amount": 49999990000,
+          "address": "1ChangeAddr5ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640003000,
+      "metadata": {
+        "fee": 10000,
+        "assignment": {
+          "certificate_id": "CERT-2025-0001",
+          "assigned_amount": 50000000000
+        }
+      }
+    },
+    {
+      "txid": "e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4",
+      "tx_type": "COMPENSATION",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3",
+          "prev_index": 0,
+          "signature": "304502210098765432109876543210987654321098765432109876543210987654321098022045678901234567890123456789012345678901234567890123456789012345678",
+          "pubkey": "0456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 30000000000,
+          "address": "1CCO2BurnAddressXXXXXXXXXXXYs9mBD",
+          "coin_state": "COMPENSATED",
+          "certificate_id": "CERT-2025-0001"
+        },
+        {
+          "amount": 19999990000,
+          "address": "1CertHolder6ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "CERTIFIED",
+          "certificate_id": "CERT-2025-0001"
+        }
+      ],
+      "timestamp": 1640004000,
+      "metadata": {
+        "fee": 10000,
+        "compensation": {
+          "certificate_id": "CERT-2025-0001",
+          "compensated_amount": 30000000000,
+          "claim_name": "Acme Corporation",
+          "claim_description": "Q4 2025 Carbon Offset"
+        }
+      }
+    },
+    {
+      "txid": "f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4e5",
+      "tx_type": "TRANSFER",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1",
+          "prev_index": 1,
+          "signature": "3044022011111111111111111111111111111111111111111111111111111111111111110220222222222222222222222222222222222222222222222222222222222222",
+          "pubkey": "0433333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 500000000,
+          "address": "1Recipient7ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        },
+        {
+          "amount": 500000000,
+          "address": "1Recipient8ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        },
+        {
+          "amount": 500000000,
+          "address": "1Recipient9ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        },
+        {
+          "amount": 1499980000,
+          "address": "1ChangeAddr9ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640005000,
+      "metadata": {
+        "fee": 10000,
+        "description": "Multi-output payment"
+      }
+    },
+    {
+      "txid": "g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4e5f6",
+      "tx_type": "COINBASE",
+      "version": 1,
+      "inputs": [],
+      "outputs": [
+        {
+          "amount": 5000000000,
+          "address": "1MinerAddr10ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640006000,
+      "metadata": {
+        "block_height": 100,
+        "coinbase_message": "Block 100 - First Hundred!",
+        "miner_tag": "CarbonPool"
+      }
+    },
+    {
+      "txid": "h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4e5f6g7",
+      "tx_type": "TRANSFER",
+      "version": 1,
+      "inputs": [
+        {
+          "prev_txid": "f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4e5",
+          "prev_index": 0,
+          "signature": "304402204444444444444444444444444444444444444444444444444444444444444444022055555555555555555555555555555555555555555555555555555555555555",
+          "pubkey": "0466666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666"
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 100000000,
+          "address": "1Merchant11ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        },
+        {
+          "amount": 399990000,
+          "address": "1Change11ABCDEFGHJKLMNPQRSTUVWXYZabcdefgh",
+          "coin_state": "SPENDABLE"
+        }
+      ],
+      "timestamp": 1640007000,
+      "metadata": {
+        "fee": 10000,
+        "description": "Purchase - CO2 Certificate Marketplace",
+        "merchant": "GreenExchange",
+        "order_id": "ORD-2025-12345"
+      }
+    }
+  ],
+  "test_scenarios": {
+    "simple_transfer": {
+      "description": "Basic transfer between two addresses",
+      "txid": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1",
+      "amount": 2000000000,
+      "fee": 10000
+    },
+    "certificate_issuance": {
+      "description": "Certificate creation transaction",
+      "txid": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2",
+      "certificate_id": "CERT-2025-0001",
+      "amount": 100000000000
+    },
+    "certificate_assignment": {
+      "description": "Assign coins to certificate",
+      "txid": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3",
+      "certificate_id": "CERT-2025-0001",
+      "assigned_amount": 50000000000
+    },
+    "compensation": {
+      "description": "Compensate certificate (burn)",
+      "txid": "e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4",
+      "certificate_id": "CERT-2025-0001",
+      "compensated_amount": 30000000000
+    },
+    "multi_output": {
+      "description": "Transaction with multiple recipients",
+      "txid": "f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a1b2c3d4e5",
+      "output_count": 4
+    }
+  }
+}

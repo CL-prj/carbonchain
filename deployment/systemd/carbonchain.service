@@ -1,0 +1,52 @@
+# CarbonChain - Systemd Service
+# ==============================
+# Production systemd service file
+
+[Unit]
+Description=CarbonChain Blockchain Node
+Documentation=https://docs.carbonchain.io
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=carbonchain
+Group=carbonchain
+
+# Working directory
+WorkingDirectory=/opt/carbonchain
+
+# Environment
+Environment="CARBONCHAIN_NETWORK=mainnet"
+Environment="CARBONCHAIN_DATA_DIR=/var/lib/carbonchain"
+Environment="CARBONCHAIN_LOG_LEVEL=INFO"
+
+# Command
+ExecStart=/usr/local/bin/carbonchain node start \
+    --config /etc/carbonchain/config.yaml \
+    --data-dir /var/lib/carbonchain
+
+# Restart policy
+Restart=on-failure
+RestartSec=10s
+StartLimitInterval=5min
+StartLimitBurst=3
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/carbonchain /var/log/carbonchain
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=carbonchain
+
+[Install]
+WantedBy=multi-user.target

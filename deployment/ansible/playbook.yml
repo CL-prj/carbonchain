@@ -1,0 +1,318 @@
+# CarbonChain - Ansible Deployment Playbook
+# ==========================================
+# Automated deployment for CarbonChain nodes
+
+---
+- name: Deploy CarbonChain Blockchain Node
+  hosts: carbonchain_nodes
+  become: yes
+  vars:
+    carbonchain_version: "1.0.0"
+    carbonchain_user: "carbonchain"
+    carbonchain_group: "carbonchain"
+    carbonchain_home: "/opt/carbonchain"
+    carbonchain_data_dir: "/var/lib/carbonchain"
+    carbonchain_log_dir: "/var/log/carbonchain"
+    python_version: "3.11"
+    network_type: "mainnet"
+
+  tasks:
+    # ========================================================================
+    # SYSTEM SETUP
+    # ========================================================================
+    
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - git
+          - curl
+          - wget
+          - build-essential
+          - libssl-dev
+          - libffi-dev
+          - nginx
+          - postgresql
+          - postgresql-contrib
+          - redis-server
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Create CarbonChain user
+      user:
+        name: "{{ carbonchain_user }}"
+        group: "{{ carbonchain_group }}"
+        home: "{{ carbonchain_home }}"
+        shell: /bin/bash
+        system: yes
+        create_home: yes
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ carbonchain_user }}"
+        group: "{{ carbonchain_group }}"
+        mode: '0755'
+      loop:
+        - "{{ carbonchain_home }}"
+        - "{{ carbonchain_data_dir }}"
+        - "{{ carbonchain_log_dir }}"
+        - "{{ carbonchain_home }}/wallets"
+        - "{{ carbonchain_home }}/config"
+
+    # ========================================================================
+    # CARBONCHAIN INSTALLATION
+    # ========================================================================
+
+    - name: Clone CarbonChain repository
+      git:
+        repo: 'https://github.com/carbonchain/carbonchain.git'
+        dest: "{{ carbonchain_home }}/source"
+        version: "v{{ carbonchain_version }}"
+        force: yes
+      become_user: "{{ carbonchain_user }}"
+
+    - name: Create Python virtual environment
+      pip:
+        name: pip
+        virtualenv: "{{ carbonchain_home }}/venv"
+        virtualenv_command: python3 -m venv
+      become_user: "{{ carbonchain_user }}"
+
+    - name: Install CarbonChain Python dependencies
+      pip:
+        requirements: "{{ carbonchain_home }}/source/requirements.txt"
+        virtualenv: "{{ carbonchain_home }}/venv"
+      become_user: "{{ carbonchain_user }}"
+
+    - name: Install CarbonChain
+      pip:
+        name: "{{ carbonchain_home }}/source"
+        virtualenv: "{{ carbonchain_home }}/venv"
+        editable: yes
+      become_user: "{{ carbonchain_user }}"
+
+    # ========================================================================
+    # CONFIGURATION
+    # ========================================================================
+
+    - name: Copy configuration file
+      template:
+        src: templates/config.yaml.j2
+        dest: "{{ carbonchain_home }}/config/config.yaml"
+        owner: "{{ carbonchain_user }}"
+        group: "{{ carbonchain_group }}"
+        mode: '0644'
+
+    - name: Copy systemd service file
+      template:
+        src: templates/carbonchain.service.j2
+        dest: /etc/systemd/system/carbonchain.service
+        mode: '0644'
+      notify: reload systemd
+
+    - name: Copy nginx configuration
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/carbonchain
+        mode: '0644'
+      notify: reload nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/carbonchain
+        dest: /etc/nginx/sites-enabled/carbonchain
+        state: link
+      notify: reload nginx
+
+    # ========================================================================
+    # DATABASE SETUP
+    # ========================================================================
+
+    - name: Create PostgreSQL database
+      postgresql_db:
+        name: carbonchain
+        state: present
+      become_user: postgres
+
+    - name: Create PostgreSQL user
+      postgresql_user:
+        name: carbonchain
+        password: "{{ db_password }}"
+        db: carbonchain
+        priv: ALL
+      become_user: postgres
+
+    # ========================================================================
+    # FIREWALL
+    # ========================================================================
+
+    - name: Configure UFW
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "22"      # SSH
+        - "80"      # HTTP
+        - "443"     # HTTPS
+        - "9333"    # P2P
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+
+    # ========================================================================
+    # SSL CERTIFICATES (Let's Encrypt)
+    # ========================================================================
+
+    - name: Install certbot
+      apt:
+        name:
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Obtain SSL certificate
+      command: >
+        certbot --nginx
+        -d {{ domain_name }}
+        --non-interactive
+        --agree-tos
+        --email {{ ssl_email }}
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
+
+    # ========================================================================
+    # SERVICE MANAGEMENT
+    # ========================================================================
+
+    - name: Enable CarbonChain service
+      systemd:
+        name: carbonchain
+        enabled: yes
+        state: started
+
+    - name: Enable nginx service
+      systemd:
+        name: nginx
+        enabled: yes
+        state: started
+
+    - name: Enable postgresql service
+      systemd:
+        name: postgresql
+        enabled: yes
+        state: started
+
+    - name: Enable redis service
+      systemd:
+        name: redis-server
+        enabled: yes
+        state: started
+
+    # ========================================================================
+    # MONITORING
+    # ========================================================================
+
+    - name: Install Prometheus node exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+
+    - name: Enable node exporter
+      systemd:
+        name: prometheus-node-exporter
+        enabled: yes
+        state: started
+
+    # ========================================================================
+    # BACKUP SETUP
+    # ========================================================================
+
+    - name: Create backup script
+      template:
+        src: templates/backup.sh.j2
+        dest: "{{ carbonchain_home }}/backup.sh"
+        owner: "{{ carbonchain_user }}"
+        group: "{{ carbonchain_group }}"
+        mode: '0750'
+
+    - name: Setup backup cron job
+      cron:
+        name: "CarbonChain daily backup"
+        minute: "0"
+        hour: "2"
+        job: "{{ carbonchain_home }}/backup.sh"
+        user: "{{ carbonchain_user }}"
+
+    # ========================================================================
+    # LOG ROTATION
+    # ========================================================================
+
+    - name: Configure logrotate
+      template:
+        src: templates/logrotate.conf.j2
+        dest: /etc/logrotate.d/carbonchain
+        mode: '0644'
+
+  handlers:
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
+
+    - name: restart carbonchain
+      systemd:
+        name: carbonchain
+        state: restarted
+
+# ============================================================================
+# POST-DEPLOYMENT TASKS
+# ============================================================================
+
+- name: Post-deployment verification
+  hosts: carbonchain_nodes
+  become: yes
+  tasks:
+    - name: Wait for CarbonChain API
+      uri:
+        url: "http://localhost:8000/health"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 10
+      delay: 5
+
+    - name: Check node info
+      command: "{{ carbonchain_home }}/venv/bin/carbonchain node info"
+      become_user: "{{ carbonchain_user }}"
+      register: node_info
+
+    - name: Display node info
+      debug:
+        var: node_info.stdout_lines
+
+    - name: Verify blockchain height
+      uri:
+        url: "http://localhost:8000/api/stats"
+        return_content: yes
+      register: stats
+
+    - name: Display blockchain stats
+      debug:
+        var: stats.json

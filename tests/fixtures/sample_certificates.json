@@ -1,0 +1,46 @@
+{
+  "certificates": [
+    {
+      "certificate_id": "CERT-2025-0001",
+      "project_id": "PROJ-2025-001",
+      "vintage": 2025,
+      "total_amount": 1000000000000,
+      "certificate_type": "RENEWABLE_ENERGY",
+      "location": "Italy",
+      "standard": "VCS",
+      "metadata": {
+        "capacity_mw": 50,
+        "technology": "Solar PV",
+        "commissioning_date": "2024-06-01"
+      }
+    },
+    {
+      "certificate_id": "CERT-2025-0002",
+      "project_id": "PROJ-2025-002",
+      "vintage": 2025,
+      "total_amount": 500000000000,
+      "certificate_type": "FOREST_CONSERVATION",
+      "location": "Brazil",
+      "standard": "Gold Standard",
+      "metadata": {
+        "area_hectares": 10000,
+        "forest_type": "Amazon Rainforest",
+        "protection_type": "REDD+"
+      }
+    },
+    {
+      "certificate_id": "CERT-2025-0003",
+      "project_id": "PROJ-2025-003",
+      "vintage": 2025,
+      "total_amount": 250000000000,
+      "certificate_type": "CARBON_CAPTURE",
+      "location": "Iceland",
+      "standard": "Puro.earth",
+      "metadata": {
+        "capture_method": "Direct Air Capture",
+        "storage_method": "Geological",
+        "capacity_annual_tons": 2500
+      }
+    }
+  ]
+}

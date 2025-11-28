@@ -1,0 +1,74 @@
+# CarbonChain - Prometheus Configuration
+# =======================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'carbonchain-mainnet'
+    replica: '1'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load rules
+rule_files:
+  - 'alerts/*.yml'
+
+# Scrape configurations
+scrape_configs:
+  # CarbonChain API metrics
+  - job_name: 'carbonchain-api'
+    static_configs:
+      - targets:
+          - 'node1:8000'
+          - 'node2:8000'
+          - 'node3:8000'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # CarbonChain node metrics
+  - job_name: 'carbonchain-node'
+    static_configs:
+      - targets:
+          - 'node1:9090'
+          - 'node2:9090'
+          - 'node3:9090'
+    metrics_path: '/node/metrics'
+    scrape_interval: 30s
+
+  # System metrics (node exporter)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets:
+          - 'node1:9100'
+          - 'node2:9100'
+          - 'node3:9100'
+
+  # PostgreSQL metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets:
+          - 'postgres-exporter:9187'
+
+  # Redis metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets:
+          - 'redis-exporter:9121'
+
+  # Nginx metrics
+  - job_name: 'nginx'
+    static_configs:
+      - targets:
+          - 'nginx-exporter:9113'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets:
+          - 'localhost:9090'

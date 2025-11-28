@@ -1,0 +1,107 @@
+{
+  "dashboard": {
+    "title": "CarbonChain - Overview",
+    "tags": ["carbonchain", "blockchain"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Blockchain Height",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "carbonchain_blockchain_height",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 2,
+        "title": "Transaction Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(carbonchain_transactions_total[5m])",
+            "legendFormat": "{{type}}"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        }
+      },
+      {
+        "id": 3,
+        "title": "Mempool Size",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "carbonchain_mempool_size"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        }
+      },
+      {
+        "id": 4,
+        "title": "Active Peers",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "carbonchain_peers_active"
+          }
+        ],
+        "gridPos": {
+          "x": 6,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        }
+      },
+      {
+        "id": 5,
+        "title": "Total Supply",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "carbonchain_total_supply"
+          }
+        ],
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        }
+      },
+      {
+        "id": 6,
+        "title": "Network Hashrate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "carbonchain_network_hashrate"
+          }
+        ],
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 24,
+          "h": 8
+        }
+      }
+    ]
+  }
+}
